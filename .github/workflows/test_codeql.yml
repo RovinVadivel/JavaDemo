@@ -1,0 +1,57 @@
+name: Test_CodeQL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        language: [ 'java', 'javascript' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12.x'
+
+    - name: Install CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Build and analyze code
+      uses: github/codeql-action/analyze@v1
+      with:
+        language: ${{ matrix.language }}
+        # Path to the CodeQL query repository
+        # Default: '.github/codeql'
+        # For example: 'my-custom-query-repo'
+        # Note: If this parameter is not set and there is no default query repository,
+        # the action will look for queries in the .github/codeql directory.
+        queries: '.github/codeql'
+        # Path to the SARIF file to output the results to.
+        # Default: 'codeql-results.sarif'
+        # For example: 'my-custom-results.sarif'
+        # Note: If the path is relative, it will be relative to the root of the repository.
+        output: 'codeql-results.sarif'
+        # CodeQL database variant to use.
+        # Default: 'security-and-quality'
+        # For example: 'security'
+        database: 'security-and-quality'
+        # Optional: set to true to fail the job if there are any results.
+        # Default: false
+        fail-on-results: true
