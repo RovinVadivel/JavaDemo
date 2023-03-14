@@ -20,7 +20,9 @@ on:
     branches: [ "master" ]
   schedule:
     - cron: '26 4 * * 2'
-
+env:
+  CODEQL_EXTRACTOR_JAVA_JSP: true
+  
 jobs:
   analyze:
     name: Analyze
